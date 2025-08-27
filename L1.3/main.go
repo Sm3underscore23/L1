@@ -5,7 +5,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
+
+const handleTime = time.Second * 1
 
 var (
 	workersNum = flag.Int("workers-num", 1, "Number of workers in worker pool")
@@ -17,7 +20,7 @@ func main() {
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
 	dataChan := make(chan string, 1)
-	wp := NewWP(*workersNum)
+	wp := NewWP(*workersNum, handleTime)
 	wp.Create()
 
 loop:
