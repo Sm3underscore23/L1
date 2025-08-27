@@ -10,23 +10,23 @@ type worker struct {
 	jobsDone int
 }
 
-type wp struct {
+type workerPool struct {
 	workers chan worker
 }
 
-func NewWP(workersNum int) *wp {
-	return &wp{
+func NewWP(workersNum int) *workerPool {
+	return &workerPool{
 		workers: make(chan worker, workersNum),
 	}
 }
 
-func (wp *wp) Create() {
+func (wp *workerPool) Create() {
 	for i := range cap(wp.workers) {
 		wp.workers <- worker{name: i}
 	}
 }
 
-func (wp *wp) Handle(data string) {
+func (wp *workerPool) Handle(data string) {
 	worker := <-wp.workers
 	go func() {
 		log.Printf("worker %v: processing...", worker.name)
@@ -37,7 +37,7 @@ func (wp *wp) Handle(data string) {
 	}()
 }
 
-func (wp *wp) Whait() {
+func (wp *workerPool) Whait() {
 	for range cap(wp.workers) {
 		worker := <-wp.workers
 		log.Printf("worker %v: jobs done: %v", worker.name, worker.jobsDone)
