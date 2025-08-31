@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func reverce(data string) string {
+func reverseWord(data string) string {
 	if 2 > len(data) {
 		return data
 	}
@@ -22,5 +22,5 @@ func reverce(data string) string {
 
 func main() {
 	data := "главрыба"
-	fmt.Println(reverce(data))
+	fmt.Println(reverseWord(data))
 }
