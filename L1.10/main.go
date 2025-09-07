@@ -18,7 +18,7 @@ const workersNum = 10
 
 type result struct {
 	checker   map[float64]struct{}
-	tempsData map[int][]float64
+	tempsData map[string][]float64
 	mu        sync.Mutex
 }
 
@@ -28,12 +28,17 @@ func handle(rowTemp string, result *result) error {
 		return err
 	}
 
-	var group int
-
-	if temp >= 0 {
-		group = int(math.Floor(temp)) / 10 * 10
-	} else {
-		group = int(temp) / 10 * 10
+	var group string
+	switch {
+	case temp >= 0 && temp < 10:
+		group = "0"
+	case temp < 0 && temp > -10:
+		group = "-0"
+	case temp >= 10:
+		group = fmt.Sprintf("%d", int(math.Floor(temp))/10*10)
+	case temp <= -10:
+		fmt.Println(int(temp))
+		group = fmt.Sprintf("%d", int(temp)/10*10)
 	}
 
 	result.mu.Lock()
@@ -57,7 +62,7 @@ func main() {
 
 	result := result{
 		checker:   map[float64]struct{}{},
-		tempsData: map[int][]float64{},
+		tempsData: map[string][]float64{},
 	}
 
 	data, _, err := r.ReadLine()
